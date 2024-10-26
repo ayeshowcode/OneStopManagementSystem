@@ -368,10 +368,51 @@ public:
             quickSort(arr, pi + 1, high, compare); // After pi
         }
     }
+    int binarySearch(ServiceRequest arr[], int size, int key, bool (*compare)(const ServiceRequest &, const ServiceRequest &))
+    {
+        int low = 0;
+        int high = size - 1;
+        while (low <= high)
+        {
+            int mid = low + (high - low) / 2;
+            if (arr[mid].getTicketID() == key)
+                return mid;
+            if (compare(arr[mid], ServiceRequest(key, "", 0)))
+                low = mid + 1;
+            else
+                high = mid - 1;
+        }
+        return -1;
+    }
+    int interpolationSearch(ServiceRequest arr[], int size, int key, bool (*compare)(const ServiceRequest &, const ServiceRequest &))
+    {
+        int low = 0;
+        int high = size - 1;
+        while (low <= high && key >= arr[low].getTicketID() && key <= arr[high].getTicketID())
+        {
+            int pos = low + ((key - arr[low].getTicketID()) * (high - low) / (arr[high].getTicketID() - arr[low].getTicketID()));
+            if (arr[pos].getTicketID() == key)
+                return pos;
+            if (compare(arr[pos], ServiceRequest(key, "", 0)))
+                low = pos + 1;
+            else
+                high = pos - 1;
+        }
+        return -1;
+    }
+    int LinearSearch(ServiceRequest arr[], int size, string key, bool (*compare)(const ServiceRequest &, const ServiceRequest &))
+    {
+        for (int i = 0; i < size; i++)
+        {
+            if (arr[i].getCustomerName() == key)
+                return i;
+        }
+        return -1;
+    }
 };
 
 // Function to read configuration file
-string readConfig()
+string readconfigSort()
 {
     ifstream configFile("config.txt");
     string line;
@@ -388,7 +429,23 @@ string readConfig()
     }
     return "bubble"; // Default to bubble sort if config file is not found
 }
-
+string readconfigSearch()
+{
+    ifstream configFile("config.txt");
+    string line;
+    if (configFile.is_open())
+    {
+        while (getline(configFile, line))
+        {
+            if (line.find("default_search_algorithm=") == 0)
+            {
+                return line.substr(23); // Get the searching algorithm
+            }
+        }
+        configFile.close();
+    }
+    return "binary search"; // Default to bubble sort if config file is not found
+}
 int main()
 {
     ServiceRequest requests[5] = {
@@ -418,7 +475,7 @@ int main()
     cin >> choice;
 
     // Read sorting algorithm from config file
-    string sortingAlgorithm = readConfig();
+    string sortingAlgorithm = readconfigSort();
     Sorting s;
 
     // Perform sorting based on user choice and sorting algorithm
@@ -480,7 +537,7 @@ int main()
             return 1;
         }
     }
-    else if(sortingAlgorithm == "merge sort")
+    else if (sortingAlgorithm == "merge sort")
     {
         cout << "Merge sort" << endl;
         switch (choice)
@@ -499,7 +556,7 @@ int main()
             return 1;
         }
     }
-    else if(sortingAlgorithm == "quick sort")
+    else if (sortingAlgorithm == "quick sort")
     {
         cout << "Quick sort" << endl;
         switch (choice)
@@ -527,5 +584,51 @@ int main()
     list.fromArray(sortedRequests, size);
     list.display();
 
+    cout << "Enter the choice: " << endl;
+    cout << "search by ticket id: 1" << endl;
+    cout << "search by name: 2" << endl;
+    cin >> choice;
+    if (choice == 1)
+    {
+        string searchAlgorithm = readconfigSearch();
+        Sorting s1;
+        if (searchAlgorithm == "binary search")
+        {
+            cout << "Binary search" << endl;
+            int key;
+            cin >> key;
+            int index = s1.binarySearch(sortedRequests, size, key, Sorting::compareByPriority);
+            if (index != -1)
+            {
+                cout << "Ticket found at index " << index << endl;
+                sortedRequests[index].displayRequest();
+            }
+            else
+            {
+                cout << "Ticket not found" << endl;
+            }
+        }
+        else if (searchAlgorithm == "interpolation search")
+        {
+            cout << "Interpolation search" << endl;
+            int key;
+            cin >> key;
+            int index = s1.interpolationSearch(sortedRequests, size, key, Sorting::compareByPriority);
+            if (index != -1)
+            {
+                cout << "Ticket found at index " << index << endl;
+                sortedRequests[index].displayRequest();
+            }
+            else
+            {
+                cout << "Ticket not found" << endl;
+            }
+        }
+        else
+        {
+            cout << "Unknown search algorithm specified in config." << endl;
+            return 1;
+        }
+    }
     return 0;
 }

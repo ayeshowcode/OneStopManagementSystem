@@ -1,1 +1,2 @@
 default_sort_algorithm=merge sort
+default_search_algorithm=binary search
