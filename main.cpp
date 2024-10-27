@@ -3,7 +3,12 @@
 #include <ctime>
 #include <fstream>
 using namespace std;
-
+///
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct Timestamp
 {
     time_t time;
@@ -627,8 +632,240 @@ void solveforServiceTicketManagement()
         }
     }
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+const int MAX_TICKETS = 5;  // Max number of tickets an agent can handle
+const int MAX_AGENTS = 100; // Maximum number of agents we can store
+
+class Agent
+{
+private:
+    int agentID;
+    string agentName;
+    int assignedTickets[MAX_TICKETS]; // Array to store ticket IDs assigned to the agent
+    int ticketCount;                  // Number of tickets currently assigned to the agent
+    bool available;
+
+public:
+    // Constructor
+    Agent() : agentID(0), agentName(""), ticketCount(0), available(true)
+    {
+        for (int i = 0; i < MAX_TICKETS; i++)
+        {
+            assignedTickets[i] = 0; // Initialize with no tickets
+        }
+    }
+
+    Agent(int id, string name) : agentID(id), agentName(name), ticketCount(0), available(true)
+    {
+        for (int i = 0; i < MAX_TICKETS; i++)
+        {
+            assignedTickets[i] = 0; // Initialize with no tickets
+        }
+    }
+
+    // Getters
+    int getAgentID() const { return agentID; }
+    string getAgentName() const { return agentName; }
+    bool isAvailable() const { return available; }
+    int getTicketCount() const { return ticketCount; }
+
+    // Assign a ticket to the agent
+    bool assignTicket(int ticketID)
+    {
+        if (ticketCount < MAX_TICKETS)
+        {
+            assignedTickets[ticketCount++] = ticketID; // Assign the ticket and increment count
+            if (ticketCount == MAX_TICKETS)
+            {
+                available = false; // Mark unavailable if at max capacity
+            }
+            return true;
+        }
+        return false; // Agent is at full capacity
+    }
+
+    // Remove a ticket from the agent
+    void removeTicket(int ticketID)
+    {
+        for (int i = 0; i < ticketCount; i++)
+        {
+            if (assignedTickets[i] == ticketID)
+            {
+                // Shift remaining tickets one position to the left
+                for (int j = i; j < ticketCount - 1; j++)
+                {
+                    assignedTickets[j] = assignedTickets[j + 1];
+                }
+                ticketCount--;
+                available = true; // Mark available when a ticket is removed
+                return;
+            }
+        }
+    }
+
+    // Display agent information
+    void displayAgent() const
+    {
+        cout << "Agent ID: " << agentID << ", Name: " << agentName
+             << ", Tickets Assigned: " << ticketCount
+             << ", Status: " << (available ? "Available" : "Unavailable") << endl;
+    }
+};
+
+class AgentManagement
+{
+private:
+    Agent agents[MAX_AGENTS]; // Array for storing agents
+    int agentCount;           // Current number of agents in the system
+
+public:
+    // Constructor
+    AgentManagement() : agentCount(0) {}
+
+    // Add a new agent
+    void addAgent(int id, string name)
+    {
+        if (agentCount < MAX_AGENTS)
+        {
+            agents[agentCount++] = Agent(id, name); // Add new agent to the array
+            cout << "Agent " << name << " (ID: " << id << ") added to the system." << endl;
+        }
+        else
+        {
+            cout << "Agent capacity reached. Cannot add more agents." << endl;
+        }
+    }
+
+    // Assign tickets to available agents based on priority and current load
+    void assignTicketToAgent(int ticketID, int priority)
+    {
+        // Sort agents manually based on availability and the number of tickets assigned
+        for (int i = 0; i < agentCount - 1; i++)
+        {
+            for (int j = 0; j < agentCount - i - 1; j++)
+            {
+                if (!agents[j].isAvailable() ||
+                    (agents[j].getTicketCount() > agents[j + 1].getTicketCount()))
+                {
+                    // Swap agents[j] and agents[j + 1]
+                    Agent temp = agents[j];
+                    agents[j] = agents[j + 1];
+                    agents[j + 1] = temp;
+                }
+            }
+        }
+
+        // Assign the ticket to the first available agent
+        for (int i = 0; i < agentCount; i++)
+        {
+            if (agents[i].isAvailable())
+            {
+                if (agents[i].assignTicket(ticketID))
+                {
+                    cout << "Ticket ID " << ticketID << " (priority: " << priority << ") assigned to Agent "
+                         << agents[i].getAgentName() << " (ID: " << agents[i].getAgentID() << ")." << endl;
+                    return;
+                }
+            }
+        }
+
+        cout << "No available agents to assign the ticket." << endl;
+    }
+
+    // Mark an agent as unavailable after reaching full capacity
+    void markAgentUnavailable(int agentID)
+    {
+        for (int i = 0; i < agentCount; i++)
+        {
+            if (agents[i].getAgentID() == agentID)
+            {
+                if (agents[i].getTicketCount() == MAX_TICKETS)
+                {
+                    cout << "Agent " << agentID << " is already at full capacity and marked unavailable." << endl;
+                }
+                else
+                {
+                    cout << "Agent " << agentID << " is not at full capacity, no action taken." << endl;
+                }
+                return;
+            }
+        }
+        cout << "Agent not found." << endl;
+    }
+
+    // Display all agents
+    void displayAgents() const
+    {
+        for (int i = 0; i < agentCount; i++)
+        {
+            agents[i].displayAgent();
+        }
+    }
+};
+void solveforAgentManagement()
+{
+    AgentManagement agentManager;
+    int choice;
+
+    while (true)
+    {
+        cout << "\nAgent Management Menu:\n";
+        cout << "1. Add an Agent\n";
+        cout << "2. Assign Ticket to Agent\n";
+        cout << "3. Mark Agent Unavailable\n";
+        cout << "4. Display All Agents\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if (choice == 1)
+        {
+            int agentID;
+            string agentName;
+            cout << "Enter Agent ID: ";
+            cin >> agentID;
+            cout << "Enter Agent Name: ";
+            cin.ignore(); // Clear input buffer
+            getline(cin, agentName);
+            agentManager.addAgent(agentID, agentName);
+        }
+        else if (choice == 2)
+        {
+            int ticketID, priority;
+            cout << "Enter Ticket ID: ";
+            cin >> ticketID;
+            cout << "Enter Ticket Priority: ";
+            cin >> priority;
+            agentManager.assignTicketToAgent(ticketID, priority);
+        }
+        else if (choice == 3)
+        {
+            int agentID;
+            cout << "Enter Agent ID to mark unavailable: ";
+            cin >> agentID;
+            agentManager.markAgentUnavailable(agentID);
+        }
+        else if (choice == 4)
+        {
+            agentManager.displayAgents();
+        }
+        else if (choice == 5)
+        {
+            break;
+        }
+        else
+        {
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    }
+}
 int main()
 {
     solveforServiceTicketManagement();
-
+    solveforAgentManagement();
 }
