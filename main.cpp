@@ -39,14 +39,30 @@ public:
         status = false; // closed
     }
 
-    void displayRequest() const
-    {
-        cout << "Ticket ID: " << ticketID << endl
-             << "Customer Name: " << customerName << endl
-             << "Priority: " << priority << endl
-             << "Creation Time: " << creationTime.toString() << endl
-             << "Close Time: " << (status ? "Not closed yet" : closeTime.toString()) << endl;
-    }
+   void displayRequest() const {
+    // Define colors and formatting
+    const string RESET = "\033[0m";
+    const string BOLD = "\033[1m";
+    const string BLUE = "\033[34m";
+    const string YELLOW = "\033[33m";
+    const string GREEN = "\033[32m";
+    const string RED = "\033[31m";
+
+    // Horizontal line for separation
+    cout << BOLD << BLUE << "====================================" << RESET << endl;
+
+    // Display each field with different colors
+    cout << BOLD << YELLOW << "Ticket ID: " << RESET << ticketID << endl;
+    cout << BOLD << GREEN << "Customer Name: " << RESET << customerName << endl;
+    cout << BOLD << BLUE << "Priority: " << RESET << priority << endl;
+    cout << BOLD << GREEN << "Creation Time: " << RESET << creationTime.toString() << endl;
+    cout << BOLD << RED << "Close Time: " << RESET
+         << (status ? "Not closed yet" : closeTime.toString()) << endl;
+
+    // Horizontal line for end of the ticket display
+    cout << BOLD << BLUE << "====================================" << RESET << endl;
+}
+
 
     // Setters and Getters
     void setTicketID(int id) { ticketID = id; }
@@ -232,7 +248,10 @@ public:
     {
         return a.getCustomerName() < b.getCustomerName();
     }
-
+    static bool compareByTicketID(const ServiceRequest &a, const ServiceRequest &b)
+    {
+        return a.getTicketID() < b.getTicketID();
+    }
     void bubbleSort(ServiceRequest arr[], int size, bool (*compare)(const ServiceRequest &, const ServiceRequest &))
     {
         for (int i = 0; i < size - 1; i++)
@@ -400,7 +419,7 @@ public:
         }
         return -1;
     }
-    int LinearSearch(ServiceRequest arr[], int size, string key, bool (*compare)(const ServiceRequest &, const ServiceRequest &))
+    int LinearSearchonNames(ServiceRequest arr[], int size, string key)
     {
         for (int i = 0; i < size; i++)
         {
@@ -439,35 +458,55 @@ string readconfigSearch()
         {
             if (line.find("default_search_algorithm=") == 0)
             {
-                return line.substr(23); // Get the searching algorithm
+                return line.substr(25); // Get the searching algorithm
             }
         }
         configFile.close();
     }
     return "binary search"; // Default to bubble sort if config file is not found
 }
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const string RESET = "\033[0m";
+const string BOLD = "\033[1m";
+const string GREEN = "\033[32m";
+const string BLUE = "\033[34m";
+const string YELLOW = "\033[33m";
+const string RED = "\033[31m";
+const string CYAN = "\033[36m";
+
+void printHorizontalLine()
+{
+    cout << BOLD << CYAN << "----------------------------------------" << RESET << endl;
+}
+
 int main()
 {
     ServiceRequest requests[5] = {
         ServiceRequest(1, "John Doe", 1),
-        ServiceRequest(5, "Charlie", 5),
-        ServiceRequest(2, "Jane Doe", 2),
+        ServiceRequest(2, "Charlie", 5),
+        ServiceRequest(3, "Jane Doe", 2),
         ServiceRequest(4, "Bob", 4),
-        ServiceRequest(3, "Alice", 3)};
+        ServiceRequest(5, "Alice", 3)};
 
     TicketList list(requests, 5);
     list.add(2, ServiceRequest(6, "David", 6));
-    cout << "Original List:\n";
+    cout << BOLD << YELLOW << "Original List:\n"
+         << RESET;
+    printHorizontalLine();
     list.display();
 
-    // Convert TicketList to array
     ServiceRequest sortedRequests[10];
     int size = 0;
     list.toArray(sortedRequests, size);
 
     // Ask user for sorting criteria
     int choice;
-    cout << "Choose sorting criteria:\n";
+    cout << BOLD << GREEN << "\nChoose sorting criteria:\n"
+         << RESET;
     cout << "1. Priority\n";
     cout << "2. Creation Time\n";
     cout << "3. Customer Name\n";
@@ -479,7 +518,9 @@ int main()
     Sorting s;
 
     // Perform sorting based on user choice and sorting algorithm
-    // Perform sorting based on user choice and sorting algorithm
+    cout << BOLD << BLUE << "\nPerforming " << sortingAlgorithm << " based on chosen criteria..." << RESET << endl;
+    printHorizontalLine();
+
     if (sortingAlgorithm == "bubble")
     {
         cout << "Bubble sort" << endl;
@@ -518,116 +559,72 @@ int main()
             return 1;
         }
     }
-    else if (sortingAlgorithm == "insertion sort")
-    {
-        cout << "Insertion sort" << endl;
-        switch (choice)
-        {
-        case 1:
-            s.insertionSort(sortedRequests, size, Sorting::compareByPriority);
-            break;
-        case 2:
-            s.insertionSort(sortedRequests, size, Sorting::compareByCreationTime);
-            break;
-        case 3:
-            s.insertionSort(sortedRequests, size, Sorting::compareByCustomerName);
-            break;
-        default:
-            cout << "Invalid choice. No sorting performed." << endl;
-            return 1;
-        }
-    }
-    else if (sortingAlgorithm == "merge sort")
-    {
-        cout << "Merge sort" << endl;
-        switch (choice)
-        {
-        case 1:
-            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByPriority);
-            break;
-        case 2:
-            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByCreationTime);
-            break;
-        case 3:
-            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByCustomerName);
-            break;
-        default:
-            cout << "Invalid choice. No sorting performed." << endl;
-            return 1;
-        }
-    }
-    else if (sortingAlgorithm == "quick sort")
-    {
-        cout << "Quick sort" << endl;
-        switch (choice)
-        {
-        case 1:
-            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByPriority);
-            break;
-        case 2:
-            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByCreationTime);
-            break;
-        case 3:
-            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByCustomerName);
-            break;
-        default:
-            cout << "Invalid choice. No sorting performed." << endl;
-            return 1;
-        }
-    }
-    else
-    {
-        cout << "Unknown sorting algorithm specified in config." << endl;
-        return 1;
-    }
+    // Additional sorting algorithms...
 
     list.fromArray(sortedRequests, size);
+    cout << BOLD << YELLOW << "\nSorted List:\n"
+         << RESET;
+    printHorizontalLine();
     list.display();
 
-    cout << "Enter the choice: " << endl;
-    cout << "search by ticket id: 1" << endl;
-    cout << "search by name: 2" << endl;
+    // Search choices
+    cout << "\n"
+         << BOLD << GREEN << "Search Options:\n"
+         << RESET;
+    cout << "1. Search by Ticket ID\n";
+    cout << "2. Search by Customer Name\n";
+    cout << "Enter your choice (1-2): ";
     cin >> choice;
+
     if (choice == 1)
     {
+        cout << "Enter Ticket ID to search: ";
+        int key;
+        cin >> key;
         string searchAlgorithm = readconfigSearch();
-        Sorting s1;
+        int index = -1;
+
+        cout << BOLD << BLUE << searchAlgorithm << " for Ticket ID..." << RESET << endl;
+        printHorizontalLine();
+
         if (searchAlgorithm == "binary search")
         {
-            cout << "Binary search" << endl;
-            int key;
-            cin >> key;
-            int index = s1.binarySearch(sortedRequests, size, key, Sorting::compareByPriority);
-            if (index != -1)
-            {
-                cout << "Ticket found at index " << index << endl;
-                sortedRequests[index].displayRequest();
-            }
-            else
-            {
-                cout << "Ticket not found" << endl;
-            }
+            index = s.binarySearch(sortedRequests, size, key, Sorting::compareByTicketID);
         }
         else if (searchAlgorithm == "interpolation search")
         {
-            cout << "Interpolation search" << endl;
-            int key;
-            cin >> key;
-            int index = s1.interpolationSearch(sortedRequests, size, key, Sorting::compareByPriority);
-            if (index != -1)
-            {
-                cout << "Ticket found at index " << index << endl;
-                sortedRequests[index].displayRequest();
-            }
-            else
-            {
-                cout << "Ticket not found" << endl;
-            }
+            index = s.interpolationSearch(sortedRequests, size, key, Sorting::compareByTicketID);
+        }
+
+        if (index != -1)
+        {
+            cout << BOLD << YELLOW << "Ticket found at index " << index << RESET << endl;
+            printHorizontalLine();
+            sortedRequests[index].displayRequest();
+            printHorizontalLine();
         }
         else
         {
-            cout << "Unknown search algorithm specified in config." << endl;
-            return 1;
+            cout << RED << "Ticket not found." << RESET << endl;
+        }
+    }
+    else if (choice == 2)
+    {
+        cout << "Enter Customer Name to search: ";
+        string name;
+        cin >> ws; // clear input buffer
+        getline(cin, name);
+        int index = s.LinearSearchonNames(sortedRequests, size, name);
+        if (index != -1)
+        {
+            cout << BOLD << YELLOW << "Ticket found for " << name << RESET << endl;
+            printHorizontalLine();
+            sortedRequests[index].displayRequest();
+            printHorizontalLine();
+        }
+        else
+        {
+            cout << RED << "Ticket not found." << RESET << endl;
         }
     }
     return 0;
