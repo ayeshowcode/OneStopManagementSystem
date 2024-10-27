@@ -39,30 +39,30 @@ public:
         status = false; // closed
     }
 
-   void displayRequest() const {
-    // Define colors and formatting
-    const string RESET = "\033[0m";
-    const string BOLD = "\033[1m";
-    const string BLUE = "\033[34m";
-    const string YELLOW = "\033[33m";
-    const string GREEN = "\033[32m";
-    const string RED = "\033[31m";
+    void displayRequest() const
+    {
+        // Define colors and formatting
+        const string RESET = "\033[0m";
+        const string BOLD = "\033[1m";
+        const string BLUE = "\033[34m";
+        const string YELLOW = "\033[33m";
+        const string GREEN = "\033[32m";
+        const string RED = "\033[31m";
 
-    // Horizontal line for separation
-    cout << BOLD << BLUE << "====================================" << RESET << endl;
+        // Horizontal line for separation
+        cout << BOLD << BLUE << "====================================" << RESET << endl;
 
-    // Display each field with different colors
-    cout << BOLD << YELLOW << "Ticket ID: " << RESET << ticketID << endl;
-    cout << BOLD << GREEN << "Customer Name: " << RESET << customerName << endl;
-    cout << BOLD << BLUE << "Priority: " << RESET << priority << endl;
-    cout << BOLD << GREEN << "Creation Time: " << RESET << creationTime.toString() << endl;
-    cout << BOLD << RED << "Close Time: " << RESET
-         << (status ? "Not closed yet" : closeTime.toString()) << endl;
+        // Display each field with different colors
+        cout << BOLD << YELLOW << "Ticket ID: " << RESET << ticketID << endl;
+        cout << BOLD << GREEN << "Customer Name: " << RESET << customerName << endl;
+        cout << BOLD << BLUE << "Priority: " << RESET << priority << endl;
+        cout << BOLD << GREEN << "Creation Time: " << RESET << creationTime.toString() << endl;
+        cout << BOLD << RED << "Close Time: " << RESET
+             << (status ? "Not closed yet" : closeTime.toString()) << endl;
 
-    // Horizontal line for end of the ticket display
-    cout << BOLD << BLUE << "====================================" << RESET << endl;
-}
-
+        // Horizontal line for end of the ticket display
+        cout << BOLD << BLUE << "====================================" << RESET << endl;
+    }
 
     // Setters and Getters
     void setTicketID(int id) { ticketID = id; }
@@ -482,8 +482,7 @@ void printHorizontalLine()
 {
     cout << BOLD << CYAN << "----------------------------------------" << RESET << endl;
 }
-
-int main()
+void solveforServiceTicketManagement()
 {
     ServiceRequest requests[5] = {
         ServiceRequest(1, "John Doe", 1),
@@ -537,7 +536,7 @@ int main()
             break;
         default:
             cout << "Invalid choice. No sorting performed." << endl;
-            return 1;
+            exit(1);
         }
     }
     else if (sortingAlgorithm == "selection sort")
@@ -556,7 +555,7 @@ int main()
             break;
         default:
             cout << "Invalid choice. No sorting performed." << endl;
-            return 1;
+            exit(1);
         }
     }
     // Additional sorting algorithms...
@@ -627,5 +626,9 @@ int main()
             cout << RED << "Ticket not found." << RESET << endl;
         }
     }
-    return 0;
+}
+int main()
+{
+    solveforServiceTicketManagement();
+
 }
