@@ -963,6 +963,109 @@ void solveForManagingTicketResolutionLogs()
     log.displayLog();
 }
 
+class PendingTicketNode
+{
+public:
+    ServiceRequest ticket;
+    PendingTicketNode *next;
+
+    PendingTicketNode(ServiceRequest t) : ticket(t), next(nullptr) {}
+};
+
+class PendingTicketQueue
+{
+private:
+    PendingTicketNode *front;  // Pointer to the front of the queue
+    PendingTicketNode *rear;   // Pointer to the rear of the queue
+    int size;                  // Keep track of the number of tickets in the queue
+
+public:
+    // Constructor
+    PendingTicketQueue() : front(nullptr), rear(nullptr), size(0) {}
+
+    // Check if the queue is empty
+    bool isEmpty() const
+    {
+        return size == 0;
+    }
+
+    // Enqueue a new ticket to the rear of the queue
+    void enqueue(ServiceRequest ticket)
+    {
+        PendingTicketNode *newNode = new PendingTicketNode(ticket);
+
+        if (isEmpty())
+        {
+            front = rear = newNode; // Set both front and rear to the new node
+        }
+        else
+        {
+            rear->next = newNode;   // Link the new node to the last node
+            rear = newNode;         // Update the rear pointer
+        }
+
+        size++; // Increment the size of the queue
+        cout << "Ticket with ID " << ticket.getTicketID() << " added to the pending queue.\n";
+    }
+
+    // Dequeue the front ticket from the queue
+    ServiceRequest dequeue()
+    {
+        if (isEmpty())
+        {
+            cout << "No tickets are pending in the queue.\n";
+            return ServiceRequest(); // Return a default ServiceRequest if queue is empty
+        }
+
+        PendingTicketNode *temp = front; // Hold the front node temporarily
+        ServiceRequest ticket = front->ticket;
+        front = front->next;             // Move the front pointer to the next node
+
+        if (front == nullptr) // If the queue becomes empty after dequeuing
+        {
+            rear = nullptr;
+        }
+
+        delete temp; // Free the memory of the dequeued node
+        size--;      // Decrement the size
+
+        cout << "Ticket with ID " << ticket.getTicketID() << " dequeued from the pending queue.\n";
+        return ticket;
+    }
+
+    // Get the size of the queue
+    int getSize() const
+    {
+        return size;
+    }
+
+    // Display the tickets in the queue
+    void displayQueue() const
+    {
+        if (isEmpty())
+        {
+            cout << "No tickets are pending in the queue.\n";
+            return;
+        }
+
+        cout << "\nPending Ticket Queue (Front -> Rear):\n";
+        PendingTicketNode *current = front;
+        while (current != nullptr)
+        {
+            current->ticket.displayRequest(); // Display each ticket
+            current = current->next;
+        }
+    }
+
+    // Destructor to free memory
+    ~PendingTicketQueue()
+    {
+        while (!isEmpty())
+        {
+            dequeue(); // Dequeue all nodes to free memory
+        }
+    }
+};
 int main()
 {
     solveforServiceTicketManagement();
