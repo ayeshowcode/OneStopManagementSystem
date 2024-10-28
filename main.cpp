@@ -806,6 +806,7 @@ public:
             agents[i].displayAgent();
         }
     }
+    // Mark agent available
 };
 void solveforAgentManagement()
 {
@@ -864,6 +865,86 @@ void solveforAgentManagement()
         }
     }
 }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// LogNode structure for each closed ticket
+struct LogNode
+{
+    int ticketID;
+    string agentName;
+    Timestamp closeTime;
+    LogNode *next;
+
+    LogNode(int ticketID, string agentName, Timestamp closeTime)
+        : ticketID(ticketID), agentName(agentName), closeTime(closeTime), next(nullptr) {}
+};
+
+// TicketResolutionLog class to maintain a stack of closed tickets
+class TicketResolutionLog
+{
+private:
+    LogNode *top; // Pointer to the top of the stack
+
+public:
+    TicketResolutionLog() : top(nullptr) {}
+
+    // Push a new log entry onto the stack
+    void push(int ticketID, string agentName, Timestamp closeTime)
+    {
+        LogNode *newNode = new LogNode(ticketID, agentName, closeTime);
+        newNode->next = top;
+        top = newNode;
+    }
+
+    // Pop the top log entry from the stack
+    void pop()
+    {
+        if (top != nullptr)
+        {
+            LogNode *temp = top;
+            top = top->next;
+            delete temp;
+        }
+    }
+
+    // Display the most recent ticket resolution logs
+    void displayLog() const
+    {
+        LogNode *current = top;
+        if (!current)
+        {
+            cout << "No ticket resolutions logged yet." << endl;
+            return;
+        }
+
+        cout << BOLD << YELLOW << "Ticket Resolution Log (Most recent first):\n"
+             << RESET;
+        printHorizontalLine();
+        while (current != nullptr)
+        {
+            cout << BOLD << GREEN << "Ticket ID: " << RESET << current->ticketID
+                 << BOLD << BLUE << " | Agent: " << RESET << current->agentName
+                 << BOLD << RED << " | Closed at: " << RESET << current->closeTime.toString() << endl;
+
+            current = current->next;
+        }
+        printHorizontalLine();
+    }
+
+    // Destructor to free memory
+    ~TicketResolutionLog()
+    {
+        while (top != nullptr)
+        {
+            pop();
+        }
+    }
+};
+
 int main()
 {
     solveforServiceTicketManagement();
