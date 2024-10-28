@@ -1,3 +1,4 @@
+//BEFORE SEARCHING CONSIDER SORTING IT FIRST!!!
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -871,7 +872,6 @@ void solveforAgentManagement()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// LogNode structure for each closed ticket
 struct LogNode
 {
     int ticketID;
@@ -883,16 +883,14 @@ struct LogNode
         : ticketID(ticketID), agentName(agentName), closeTime(closeTime), next(nullptr) {}
 };
 
-// TicketResolutionLog class to maintain a stack of closed tickets
 class TicketResolutionLog
 {
 private:
-    LogNode *top; // Pointer to the top of the stack
+    LogNode *top; 
 
 public:
     TicketResolutionLog() : top(nullptr) {}
 
-    // Push a new log entry onto the stack
     void push(int ticketID, string agentName, Timestamp closeTime)
     {
         LogNode *newNode = new LogNode(ticketID, agentName, closeTime);
@@ -900,7 +898,6 @@ public:
         top = newNode;
     }
 
-    // Pop the top log entry from the stack
     void pop()
     {
         if (top != nullptr)
@@ -911,7 +908,6 @@ public:
         }
     }
 
-    // Display the most recent ticket resolution logs
     void displayLog() const
     {
         LogNode *current = top;
@@ -935,7 +931,6 @@ public:
         printHorizontalLine();
     }
 
-    // Destructor to free memory
     ~TicketResolutionLog()
     {
         while (top != nullptr)
@@ -948,18 +943,13 @@ void solveForManagingTicketResolutionLogs()
 {
     TicketResolutionLog log;
 
-    // Push some log entries
     log.push(101, "Alice", Timestamp());
     log.push(102, "Bob", Timestamp());
     log.push(103, "Charlie", Timestamp());
-
-    // Display the log
     log.displayLog();
 
-    // Pop one entry
     log.pop();
 
-    // Display the updated log
     log.displayLog();
 }
 
@@ -975,33 +965,30 @@ public:
 class PendingTicketQueue
 {
 private:
-    PendingTicketNode *front;  // Pointer to the front of the queue
-    PendingTicketNode *rear;   // Pointer to the rear of the queue
-    int size;                  // Keep track of the number of tickets in the queue
+    PendingTicketNode *front; 
+    PendingTicketNode *rear;   
+    int size;                  
 
 public:
-    // Constructor
     PendingTicketQueue() : front(nullptr), rear(nullptr), size(0) {}
 
-    // Check if the queue is empty
     bool isEmpty() const
     {
         return size == 0;
     }
 
-    // Enqueue a new ticket to the rear of the queue
     void enqueue(ServiceRequest ticket)
     {
         PendingTicketNode *newNode = new PendingTicketNode(ticket);
 
         if (isEmpty())
         {
-            front = rear = newNode; // Set both front and rear to the new node
+            front = rear = newNode; 
         }
         else
         {
-            rear->next = newNode;   // Link the new node to the last node
-            rear = newNode;         // Update the rear pointer
+            rear->next = newNode;   
+            rear = newNode;   
         }
 
         size++; // Increment the size of the queue
