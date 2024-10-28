@@ -944,9 +944,28 @@ public:
         }
     }
 };
+void solveForManagingTicketResolutionLogs()
+{
+    TicketResolutionLog log;
+
+    // Push some log entries
+    log.push(101, "Alice", Timestamp());
+    log.push(102, "Bob", Timestamp());
+    log.push(103, "Charlie", Timestamp());
+
+    // Display the log
+    log.displayLog();
+
+    // Pop one entry
+    log.pop();
+
+    // Display the updated log
+    log.displayLog();
+}
 
 int main()
 {
     solveforServiceTicketManagement();
     solveforAgentManagement();
+    solveForManagingTicketResolutionLogs();
 }
