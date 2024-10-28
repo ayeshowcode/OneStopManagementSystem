@@ -1066,9 +1066,94 @@ public:
         }
     }
 };
+// Function to manage pending tickets queue
+void solveForPendingTickets()
+{
+    PendingTicketQueue pendingQueue;
+    int choice;
+
+    while (true)
+    {
+        cout << "\nPending Tickets Menu:\n";
+        cout << "1. Add a Pending Ticket\n";
+        cout << "2. Process (Dequeue) a Pending Ticket\n";
+        cout << "3. Display Pending Tickets\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if (choice == 1)
+        {
+            int ticketID;
+            string customerName;
+            int priority;
+
+            cout << "Enter Ticket ID: ";
+            cin >> ticketID;
+            cout << "Enter Customer Name: ";
+            cin.ignore(); // Clear input buffer
+            getline(cin, customerName);
+            cout << "Enter Priority: ";
+            cin >> priority;
+
+            ServiceRequest newTicket(ticketID, customerName, priority);
+            pendingQueue.enqueue(newTicket);
+        }
+        else if (choice == 2)
+        {
+            pendingQueue.dequeue();
+        }
+        else if (choice == 3)
+        {
+            pendingQueue.displayQueue();
+        }
+        else if (choice == 4)
+        {
+            break;
+        }
+        else
+        {
+            cout << "Invalid choice. Please try again." << endl;
+        }
+    }
+}
+
 int main()
 {
-    solveforServiceTicketManagement();
-    solveforAgentManagement();
-    solveForManagingTicketResolutionLogs();
+    int mainChoice;
+
+    while (true)
+    {
+        cout << "\nMain Menu:\n";
+        cout << "1. Service Ticket Management\n";
+        cout << "2. Agent Management\n";
+        cout << "3. Ticket Resolution Logs\n";
+        cout << "4. Pending Ticket Queue\n";
+        cout << "5. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> mainChoice;
+
+        switch (mainChoice)
+        {
+            case 1:
+                solveforServiceTicketManagement();
+                break;
+            case 2:
+                solveforAgentManagement();
+                break;
+            case 3:
+                solveForManagingTicketResolutionLogs();
+                break;
+            case 4:
+                solveForPendingTickets();
+                break;
+            case 5:
+                cout << "Exiting the program." << endl;
+                exit(0);
+            default:
+                cout << "Invalid choice. Please try again." << endl;
+                break;
+        }
+    }
+    return 0;
 }
