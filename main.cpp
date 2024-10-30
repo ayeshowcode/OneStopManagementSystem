@@ -1,4 +1,4 @@
-//BEFORE SEARCHING CONSIDER SORTING IT FIRST!!!
+// BEFORE SEARCHING CONSIDER SORTING IT FIRST!!!
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -469,13 +469,8 @@ string readconfigSearch()
         }
         configFile.close();
     }
-    return "binary search"; // Default to bubble sort if config file is not found
+    return "binary search"; // Default to binary search if config file is not found
 }
-#include <iostream>
-#include <string>
-
-using namespace std;
-
 const string RESET = "\033[0m";
 const string BOLD = "\033[1m";
 const string GREEN = "\033[32m";
@@ -491,11 +486,11 @@ void printHorizontalLine()
 void solveforServiceTicketManagement()
 {
     ServiceRequest requests[5] = {
-        ServiceRequest(1, "John Doe", 1),
-        ServiceRequest(2, "Charlie", 5),
-        ServiceRequest(3, "Jane Doe", 2),
-        ServiceRequest(4, "Bob", 4),
-        ServiceRequest(5, "Alice", 3)};
+        ServiceRequest(1, "Ayesh", 1),
+        ServiceRequest(2, "ayesha", 2),
+        ServiceRequest(3, "munir", 2),
+        ServiceRequest(4, "army", 4),
+        ServiceRequest(5, "laila", 3)};
 
     TicketList list(requests, 5);
     list.add(2, ServiceRequest(6, "David", 6));
@@ -564,8 +559,63 @@ void solveforServiceTicketManagement()
             exit(1);
         }
     }
-    // Additional sorting algorithms...
-
+    else if(sortingAlgorithm == "insertion sort")
+    {
+        cout << "Insertion sort" << endl;
+        switch (choice)
+        {
+        case 1:
+            s.insertionSort(sortedRequests, size, Sorting::compareByPriority);
+            break;
+        case 2:
+            s.insertionSort(sortedRequests, size, Sorting::compareByCreationTime);
+            break;
+        case 3:
+            s.insertionSort(sortedRequests, size, Sorting::compareByCustomerName);
+            break;
+        default:
+            cout << "Invalid choice. No sorting performed." << endl;
+            exit(1);
+        }
+    }
+    else if (sortingAlgorithm == "merge sort")
+    {
+        cout << "Merge sort" << endl;
+        switch (choice)
+        {
+        case 1:
+            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByPriority);
+            break;
+        case 2:
+            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByCreationTime);
+            break;
+        case 3:
+            s.mergeSort(sortedRequests, 0, size - 1, Sorting::compareByCustomerName);
+            break;
+        default:
+            cout << "Invalid choice. No sorting performed." << endl;
+            exit(1);
+        }
+    }
+    else if (sortingAlgorithm == "quick sort")
+    {
+        cout << "Quick sort" << endl;
+        switch (choice)
+        {
+        case 1:
+            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByPriority);
+            break;
+        case 2:
+            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByCreationTime);
+            break;
+        case 3:
+            s.quickSort(sortedRequests, 0, size - 1, Sorting::compareByCustomerName);
+            break;
+        default:
+            cout << "Invalid choice. No sorting performed." << endl;
+            exit(1);
+        }
+    }
     list.fromArray(sortedRequests, size);
     cout << BOLD << YELLOW << "\nSorted List:\n"
          << RESET;
@@ -633,11 +683,11 @@ void solveforServiceTicketManagement()
         }
     }
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 const int MAX_TICKETS = 5;  // Max number of tickets an agent can handle
 const int MAX_AGENTS = 100; // Maximum number of agents we can store
@@ -866,12 +916,12 @@ void solveforAgentManagement()
         }
     }
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 struct LogNode
 {
     int ticketID;
@@ -1104,7 +1154,6 @@ void solveForPendingTickets()
         }
     }
 }
-
 int main()
 {
     int mainChoice;
@@ -1123,16 +1172,16 @@ int main()
         switch (mainChoice)
         {
             case 1:
-                solveforServiceTicketManagement();
+                solveforServiceTicketManagement(); // 1
                 break;
             case 2:
-                solveforAgentManagement();
+                solveforAgentManagement(); // 2
                 break;
             case 3:
-                solveForManagingTicketResolutionLogs();
+                solveForManagingTicketResolutionLogs(); // 3
                 break;
             case 4:
-                solveForPendingTickets();
+                solveForPendingTickets(); // 4
                 break;
             case 5:
                 cout << "Exiting the program." << endl;
@@ -1144,3 +1193,6 @@ int main()
     }
     return 0;
 }
+
+
+

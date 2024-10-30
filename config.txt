@@ -1,0 +1,2 @@
+default_sort_algorithm=selection sort
+default_search_algorithm=merge sort
